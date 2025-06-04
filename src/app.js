@@ -3,13 +3,27 @@ const express = require("express");
 const app = express();
 
 
-app.use("/test",(req,res)=>{
+
+app.get("/user", (req,res)=>{
+    res.send({name: "Ranveer",surname : "Rajput"});
+});
+
+
+app.post("/user", (req,res)=>{
+    res.send({name: "Ranveer",surname : "Rajput"});
+});
+
+app.delete("/user", (req,res)=>{
+    res.send("User deleted successfully");
+})
+
+app.get("/test",(req,res)=>{
     res.send("From test route");
 });
-app.use("/local", (req,res)=>{
+app.post("/local", (req,res)=>{
     res.send("Local hai bhai!!!")
 });
-app.use("/",(req,res)=>{
+app.get("/",(req,res)=>{
     res.send("Welome to dahboarad");
 });
 
