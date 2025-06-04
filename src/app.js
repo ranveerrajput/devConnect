@@ -4,9 +4,11 @@ const app = express();
 
 
 
-app.get("/user", (req,res)=>{
+app.get("/user/:userId/:name", (req,res)=>{
+    console.log(req.params);
     res.send({name: "Ranveer",surname : "Rajput"});
 });
+
 
 
 app.post("/user", (req,res)=>{
