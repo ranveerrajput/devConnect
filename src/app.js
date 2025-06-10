@@ -1,34 +1,25 @@
 const express = require("express");
+const connectDB = require("./config/database")
 
 const app = express();
 
 
-
-app.get("/user/:userId/:name", (req,res)=>{
-    console.log(req.params);
-    res.send({name: "Ranveer",surname : "Rajput"});
+app.use("/user",(req,res)=>{
+    console.log("from / route");
+    res.send("Hello ");
 });
 
 
 
-app.post("/user", (req,res)=>{
-    res.send({name: "Ranveer",surname : "Rajput"});
+connectDB()
+  .then(() => {
+    console.log("DB Connected Successfully....");
+    app.listen(7777,()=>{
+    console.log("Server is running successfully on port 7777");
 });
+  })
+  .catch((err) => {
+    console.log("DB connection Failed!!!");
+  });
 
-app.delete("/user", (req,res)=>{
-    res.send("User deleted successfully");
-})
 
-app.get("/test",(req,res)=>{
-    res.send("From test route");
-});
-app.post("/local", (req,res)=>{
-    res.send("Local hai bhai!!!")
-});
-app.get("/",(req,res)=>{
-    res.send("Welome to dahboarad");
-});
-
-app.listen(3000,()=>{
-    console.log("Server is running successfully on port 3000");
-});
