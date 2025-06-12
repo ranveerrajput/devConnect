@@ -94,6 +94,51 @@ app.delete("/user", async (req, res) => {
   }
 });
 
+//PATCH - user api to update the user
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  if (userId) {
+    try {
+      const user = await User.findByIdAndUpdate(userId, data, {
+        returnDocument: "before",
+      });
+      res.send("User Updated successfully!!!");
+    } catch (err) {
+      res.status(404).send("Something went wrong!!!");
+    }
+  } else {
+    res.status(400).send("User not found!!!");
+  }
+});
+
+//patch - user api with email id
+app.patch("/userbyemail", async (req, res) => {
+  const userEmailId = req.body.emailId;
+  const data = req.body;
+  console.log(userEmailId);
+  if (userEmailId) {
+    try {
+      const user = await User.find({ emailId: userEmailId });
+      if (user.length > 0) {
+      
+        const id = user[0];
+        const updateduser = await User.findByIdAndUpdate(id, data, {
+          returnDocument: "before",
+        });
+        console.log(updateduser);
+        res.send("User Updated successfully!!!");
+      } else {
+        res.status(400).send("User not found!!!");
+      }
+    } catch (err) {
+      res.status(404).send("Something went wrong!!!");
+    }
+  } else {
+    res.status(400).send("User not found!!!");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("DB Connected Successfully....");
