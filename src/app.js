@@ -45,7 +45,6 @@ app.get("/user", async (req, res) => {
   }
 });
 
-
 //GET user by id
 app.get("/userbyid", async (req, res) => {
   const userId = req.body._id;
@@ -64,13 +63,10 @@ app.get("/userbyid", async (req, res) => {
   }
 });
 
-
 //GET - feed api to get all the users
 app.get("/feed", async (req, res) => {
-
   try {
-    const user = await User.find({
-    });
+    const user = await User.find({});
 
     if (user.length == 0) {
       // user not found
@@ -83,7 +79,20 @@ app.get("/feed", async (req, res) => {
   }
 });
 
-
+//DELETE - user api to delete a user by id
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  if (userId) {
+    try {
+      await User.findByIdAndDelete(userId);
+      res.send("User deleted successfully!!!");
+    } catch (err) {
+      res.status(404).send("Something went wrong!!!");
+    }
+  } else {
+    res.status(400).send("User not found!!!");
+  }
+});
 
 connectDB()
   .then(() => {

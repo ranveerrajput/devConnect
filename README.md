@@ -20,3 +20,10 @@ Install mongoose libraray
 - API - get user by email
 - API - Feed API - GET/ feed - get all the users from the database
 - API - get user by ID
+- Create a delete user api
+- Difference between PATCH and PUT
+- API - update a user
+- Explore the Mongoose Dicumentation for the Model methods
+- What are the options in Model.findOneAndUpdate method, explore more about it
+- API - update the user with email ID
+
