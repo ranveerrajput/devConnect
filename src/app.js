@@ -4,20 +4,23 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 
-app.post("/signup", async(req, res) => {
-  const userObj = {
-    firstName: "Sachin",
-    lastName: "Magar",
-    emailId: "sachin@gmail.com",
-    password: "12334",
-  };
-  const user = new User(userObj);
+//we use express.json middle to convert JSON request to plan js object since server dont understand ths JSON so we have to convert that
+app.use(express.json());
 
-  try {
-    await user.save();
-     res.send("User added Successfully!!!");
-  } catch (err) {
-    res.status(400).send("Falied to save the data: " + err.message);
+app.post("/signup", async (req, res) => {
+  const userObj = req.body;
+  console.log(userObj);
+  const user = new User(userObj);
+  console.log(user);
+  if (user && userObj) {
+    try {
+      await user.save();
+      res.send("User added Successfully!!!");
+    } catch (err) {
+      res.status(400).send("Falied to save the data: " + err.message);
+    }
+  } else {
+    res.status(400).send("Falied to save the data");
   }
 });
 
@@ -25,7 +28,6 @@ app.use("/user", (req, res) => {
   console.log("from / route");
   res.send("Hello ");
 });
-
 
 connectDB()
   .then(() => {
