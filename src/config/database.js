@@ -1,9 +1,9 @@
-//mongodb+srv://ranveerrajput351:ranveerrajput351@namastedev.amk7wum.mongodb.net/
+require('dotenv').config();
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
-  await mongoose.connect(
-    "mongodb+srv://ranveer:ranveerrajput351@namastedev.amk7wum.mongodb.net/devCircle"
+  await mongoose.connect(process.env.MONGO_URI
+    
   );
 };
 
