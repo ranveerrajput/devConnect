@@ -4,3 +4,4 @@ Backend for the devConnect application which is a tinder of the developers to co
 #6
 Creating a config folder under src and creating database.js file under it
 To talk to db we will be using an npm library mongoose
+We first create a mongoose schema then we create mongoose model
