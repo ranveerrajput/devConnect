@@ -27,3 +27,16 @@ Install mongoose libraray
 - What are the options in Model.findOneAndUpdate method, explore more about it
 - API - update the user with email ID
 
+
+#8
+- Explore schematype options from the documentation
+- Add require, unique, lowercase, min . minLength, trim
+- Add a default value
+- Create a custom validavalidate function for gender
+- Improve the DB schema - Put all appropriate validations on each field in schema
+- Add timestamp to the user schema
+- Add API level validation on PATCH request and signUp post api
+- Data Sanitizing : Add API validation for each field
+- Install validator
+- Explore validator library function and use validator function for password, email and url
+- NEVER trust req.body ( Always put validations)

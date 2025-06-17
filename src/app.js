@@ -95,17 +95,32 @@ app.delete("/user", async (req, res) => {
 });
 
 //PATCH - user api to update the user
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req?.params?.userId;
   const data = req.body;
   if (userId) {
     try {
+
+      const ALLOWED_UPDATES = ["phototUrl", "about", "gender", "age", "skills"];
+      const isUpdateAllowed = Object.keys(data).every((k)=> ALLOWED_UPDATES.includes(k));
+
+      if(!isUpdateAllowed)
+      {
+        throw new Error("Updates not allowed");
+      }
+
+      if(req.body?.skills?.length > 10)
+      {
+        throw new Error("Only 10 skills are allowed")
+      }
+
       const user = await User.findByIdAndUpdate(userId, data, {
         returnDocument: "before",
+        runValidators: true
       });
       res.send("User Updated successfully!!!");
     } catch (err) {
-      res.status(404).send("Something went wrong!!!");
+      res.status(404).send(err.message);
     }
   } else {
     res.status(400).send("User not found!!!");
@@ -116,16 +131,15 @@ app.patch("/user", async (req, res) => {
 app.patch("/userbyemail", async (req, res) => {
   const userEmailId = req.body.emailId;
   const data = req.body;
-  console.log(userEmailId);
   if (userEmailId) {
     try {
       const user = await User.find({ emailId: userEmailId });
       if (user.length > 0) {
       
-        const id = user[0];
-        const updateduser = await User.findByIdAndUpdate(id, data, {
-          returnDocument: "before",
-        });
+        const id = user[0]._id;
+        console.log("id--->", id);
+        
+        const updateduser = await User.findByIdAndUpdate(id, data,{new  : false});
         console.log(updateduser);
         res.send("User Updated successfully!!!");
       } else {
