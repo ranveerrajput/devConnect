@@ -40,3 +40,10 @@ Install mongoose libraray
 - Install validator
 - Explore validator library function and use validator function for password, email and url
 - NEVER trust req.body ( Always put validations)
+
+#9
+- validate dat in signup api
+- Install bcrypt package
+- Create password hash using bcrypt.hash and save the user with encrypted password
+- Create login api
+- Compare passwords and throw error if email and password is invalid

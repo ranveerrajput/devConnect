@@ -1,5 +1,7 @@
 const express = require("express");
 const connectDB = require("./config/database");
+const { validateSignUpData } = require("./utils/validate.js");
+const bcrypt = require('bcrypt');
 
 const app = express();
 const User = require("./models/user");
@@ -8,22 +10,70 @@ const User = require("./models/user");
 app.use(express.json());
 
 //sign up api
+
 app.post("/signup", async (req, res) => {
-  const userObj = req.body;
-  console.log(userObj);
-  const user = new User(userObj);
-  console.log(user);
-  if (user && userObj) {
-    try {
-      await user.save();
-      res.send("User added Successfully!!!");
-    } catch (err) {
-      res.status(400).send("Falied to save the data: " + err.message);
-    }
-  } else {
-    res.status(400).send("Falied to save the data");
+  try {
+    //validate the data
+    validateSignUpData(req);
+    const {firstName, lastName, password, emailId} = req.body;
+
+    //encrypt the password
+
+    const passwordHash = await bcrypt.hash(password,10); //adding 10 round of salt to password
+   
+
+    console.log(passwordHash);
+
+    //save the encrypted password
+    
+    const user = new User({
+      firstName,
+      lastName,
+      password : passwordHash,
+      emailId
+    });
+
+    await user.save();
+    res.send("User added Successfully!!!");
+  } catch (err) {
+    res.status(400).send("ERROR " + err.message);
   }
 });
+
+//login api
+app.post('/login', async(req,res)=>{
+
+  try{
+    const {emailId, password} = req.body;
+
+    //check if emeial exist
+    console.log("Email id-->", emailId);
+
+    const user = await User.findOne({emailId : emailId});
+
+    if(!user)
+    {
+       throw new Error('Invalid Credentials');
+    }
+    console.log("usere--->", user);
+
+    const isValidUser = await bcrypt.compare(password,user.password);
+
+    if(isValidUser)
+    {
+      res.send("Login Successfull!!!");
+    }else{
+      throw new Error('Invalid Credentials');
+    }
+
+
+  }catch (err) {
+    res.status(400).send("ERROR " + err.message);
+  }
+  
+
+  //check if email exist
+})
 
 //GET api to get the single user
 app.get("/user", async (req, res) => {
@@ -100,23 +150,22 @@ app.patch("/user/:userId", async (req, res) => {
   const data = req.body;
   if (userId) {
     try {
-
       const ALLOWED_UPDATES = ["phototUrl", "about", "gender", "age", "skills"];
-      const isUpdateAllowed = Object.keys(data).every((k)=> ALLOWED_UPDATES.includes(k));
+      const isUpdateAllowed = Object.keys(data).every((k) =>
+        ALLOWED_UPDATES.includes(k)
+      );
 
-      if(!isUpdateAllowed)
-      {
+      if (!isUpdateAllowed) {
         throw new Error("Updates not allowed");
       }
 
-      if(req.body?.skills?.length > 10)
-      {
-        throw new Error("Only 10 skills are allowed")
+      if (req.body?.skills?.length > 10) {
+        throw new Error("Only 10 skills are allowed");
       }
 
       const user = await User.findByIdAndUpdate(userId, data, {
         returnDocument: "before",
-        runValidators: true
+        runValidators: true,
       });
       res.send("User Updated successfully!!!");
     } catch (err) {
@@ -135,11 +184,12 @@ app.patch("/userbyemail", async (req, res) => {
     try {
       const user = await User.find({ emailId: userEmailId });
       if (user.length > 0) {
-      
         const id = user[0]._id;
         console.log("id--->", id);
-        
-        const updateduser = await User.findByIdAndUpdate(id, data,{new  : false});
+
+        const updateduser = await User.findByIdAndUpdate(id, data, {
+          new: false,
+        });
         console.log(updateduser);
         res.send("User Updated successfully!!!");
       } else {
